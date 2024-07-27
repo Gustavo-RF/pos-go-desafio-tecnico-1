@@ -28,7 +28,15 @@ func main() {
 
 	// inicia o redis
 	ctx := context.Background()
-	redisClient := redisconfig.NewRedisClient(ctx, configs.RedisAddress, configs.RedisPort, configs.RedisPassword)
+	redisClient := redisconfig.NewRedisClient(
+		ctx,
+		configs.RedisAddress,
+		configs.RedisPort,
+		configs.RedisPassword,
+		configs.RateLimiter,
+		configs.RequestsPerSecond,
+		configs.BlockedTimeInSeconds,
+	)
 
 	if redisClient == nil {
 		panic(errors.New("error while load redis"))

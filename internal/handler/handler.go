@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
@@ -12,6 +13,10 @@ import (
 
 type Handler struct {
 	RedisConfig redisconfig.RedisConfig
+}
+
+type Response struct {
+	Message string `json:"message"`
 }
 
 func getIP(r *http.Request) (string, error) {
@@ -43,20 +48,47 @@ func getIP(r *http.Request) (string, error) {
 }
 
 func Handle(rc redisconfig.RedisConfig, w http.ResponseWriter, r *http.Request) {
-	ip, err := getIP(r)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+
+	var key string
+
+	if rc.RateLimiter == "IP" {
+		ip, err := getIP(r)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		key = ip
+	} else if rc.RateLimiter == "TOKEN" {
+		apiKey := r.Header.Get("Api-Key")
+
+		if apiKey == "" {
+			w.WriteHeader(http.StatusBadGateway)
+			response := Response{
+				Message: "api key header is required when rate limiter is configured for token",
+			}
+			json.NewEncoder(w).Encode(response)
+			return
+		}
+
+		key = apiKey
+	}
+
+	fmt.Printf("Key: %s\n", key)
+	if rc.Blocked(key) {
+		w.WriteHeader(http.StatusTooManyRequests)
+		response := Response{
+			Message: "you have reached the maximum number of requests or actions allowed within a certain time frame",
+		}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
-	apiKey := r.Header.Get("Api-Key")
-
-	if apiKey != "" {
-		fmt.Printf("Has key: %s\n", apiKey)
-	}
-
-	fmt.Printf("Has ip: %s\n", ip)
+	rc.IncKey(key)
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(ip))
+	response := Response{
+		Message: "success",
+	}
+	json.NewEncoder(w).Encode(response)
 }

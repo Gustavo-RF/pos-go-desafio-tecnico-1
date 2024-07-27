@@ -3,10 +3,13 @@ package configs
 import "github.com/spf13/viper"
 
 type Conf struct {
-	Port          string `mapstructure:"PORT"`
-	RedisAddress  string `mapstructure:"REDIS_ADDRESS"`
-	RedisPort     string `mapstructure:"REDIS_PORT"`
-	RedisPassword string `mapstructure:"REDIS_Password"`
+	Port                 string `mapstructure:"PORT"`
+	RedisAddress         string `mapstructure:"REDIS_ADDRESS"`
+	RedisPort            string `mapstructure:"REDIS_PORT"`
+	RedisPassword        string `mapstructure:"REDIS_PASSWORD"`
+	RateLimiter          string `mapstructure:"RATE_LIMITER"`
+	RequestsPerSecond    int    `mapstructure:"REQUESTS_PER_SECOND"`
+	BlockedTimeInSeconds int    `mapstructure:"BLOCKED_TIME_IN_SECONDS"`
 }
 
 func LoadConfig(path string) (*Conf, error) {
