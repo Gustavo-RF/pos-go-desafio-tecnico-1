@@ -9,6 +9,7 @@ import (
 	"github.com/Gustavo-RF/desafio-tecnico-1/configs"
 	"github.com/Gustavo-RF/desafio-tecnico-1/internal/handler"
 	"github.com/Gustavo-RF/desafio-tecnico-1/internal/infra/redisconfig"
+	"github.com/Gustavo-RF/desafio-tecnico-1/internal/middlewares"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -37,9 +38,11 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	r.Use(middlewares.CustomMiddleware)
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.Handle(*redisClient, w, r)
 	})
 
+	fmt.Printf("Server started at %s...\n", configs.Port)
 	http.ListenAndServe(fmt.Sprintf(":%s", configs.Port), r)
 }

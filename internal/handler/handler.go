@@ -42,13 +42,21 @@ func getIP(r *http.Request) (string, error) {
 	return "", errors.New("IP not found")
 }
 
-func Handle(redisClient redisconfig.RedisConfig, w http.ResponseWriter, r *http.Request) {
+func Handle(rc redisconfig.RedisConfig, w http.ResponseWriter, r *http.Request) {
 	ip, err := getIP(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(ip)
+
+	apiKey := r.Header.Get("Api-Key")
+
+	if apiKey != "" {
+		fmt.Printf("Has key: %s\n", apiKey)
+	}
+
+	fmt.Printf("Has ip: %s\n", ip)
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(ip))
 }
