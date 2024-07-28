@@ -75,7 +75,7 @@ func Handle(rc redisconfig.RedisConfig, w http.ResponseWriter, r *http.Request) 
 	}
 
 	fmt.Printf("Key: %s\n", key)
-	if rc.Blocked(key) {
+	if rc.IsBlocked(key) {
 		w.WriteHeader(http.StatusTooManyRequests)
 		response := Response{
 			Message: "you have reached the maximum number of requests or actions allowed within a certain time frame",

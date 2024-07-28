@@ -84,7 +84,7 @@ func (r *RedisConfig) IncKey(key string) error {
 	return nil
 }
 
-func (r *RedisConfig) Blocked(key string) bool {
+func (r *RedisConfig) IsBlocked(key string) bool {
 	k := fmt.Sprintf("blocked:%s", key)
 
 	if !r.KeyExists(k) {

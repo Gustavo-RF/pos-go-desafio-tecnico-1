@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-func CustomMiddleware(h http.Handler) http.Handler {
+func RateLimiter(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Testes middleware")
+		fmt.Println("Rate limiter")
 		h.ServeHTTP(w, r)
 	}
 

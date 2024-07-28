@@ -46,7 +46,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
-	r.Use(middlewares.CustomMiddleware)
+	r.Use(middlewares.RateLimiter)
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		handler.Handle(*redisClient, w, r)
 	})
