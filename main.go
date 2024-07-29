@@ -8,7 +8,7 @@ import (
 
 	"github.com/Gustavo-RF/desafio-tecnico-1/configs"
 	"github.com/Gustavo-RF/desafio-tecnico-1/internal/handler"
-	"github.com/Gustavo-RF/desafio-tecnico-1/internal/infra/redisconfig"
+	"github.com/Gustavo-RF/desafio-tecnico-1/internal/infra/redis"
 	"github.com/Gustavo-RF/desafio-tecnico-1/pkg/limiter"
 	"github.com/Gustavo-RF/desafio-tecnico-1/pkg/limiter/middlewares"
 	"github.com/go-chi/chi/v5"
@@ -25,7 +25,7 @@ func main() {
 
 	// inicia o redis
 	ctx := context.Background()
-	redisClient := redisconfig.NewRedisClient(
+	redisClient := redis.NewRedisClient(
 		ctx,
 		configs.RedisAddress,
 		configs.RedisPort,

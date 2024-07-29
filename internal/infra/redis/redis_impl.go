@@ -1,4 +1,4 @@
-package redisconfig
+package redis
 
 import (
 	"context"
@@ -36,7 +36,6 @@ func NewRedisClient(ctx context.Context, address, port, password, RateLimiter st
 func (r *RedisConfig) SetKey(key, value string, expireTime int) error {
 	err := r.RedisClient.Set(r.Ctx, key, value, time.Second*time.Duration(expireTime)).Err()
 	if err != nil {
-		fmt.Printf("Error set: %s", err.Error())
 		return err
 	}
 
@@ -66,8 +65,7 @@ func (r *RedisConfig) KeyExists(key string) bool {
 func (r *RedisConfig) IncKey(key string) error {
 
 	if !r.KeyExists(key) {
-		fmt.Println("Key not exists")
-		r.SetKey(key, "1", 5)
+		r.SetKey(key, "1", 1)
 		return nil
 	}
 
