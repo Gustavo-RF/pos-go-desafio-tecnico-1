@@ -17,17 +17,21 @@ type RedisConfig struct {
 	BlockedTimeInSeconds int
 }
 
-func NewRedisClient(ctx context.Context, address, port, password, RateLimiter string, request, blocked int) *RedisConfig {
+func NewRedisClient(ctx context.Context, address, port, password, rateLimiter string, request, blocked int) *RedisConfig {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", address, port),
 		Password: password,
 		DB:       0,
 	})
 
+	if rateLimiter == "" {
+		rateLimiter = "IP"
+	}
+
 	return &RedisConfig{
 		Ctx:                  ctx,
 		RedisClient:          *rdb,
-		RateLimiter:          RateLimiter,
+		RateLimiter:          rateLimiter,
 		RequestsPerSecond:    request,
 		BlockedTimeInSeconds: blocked,
 	}

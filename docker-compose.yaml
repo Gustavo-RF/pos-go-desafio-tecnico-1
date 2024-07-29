@@ -27,6 +27,16 @@ services:
     networks:
       - redis-network
 
+  rate-limiter:
+    build: 
+      context: .
+    environment:
+      - DOTENV_PATH=.env
+    ports:
+      - 8080:8080
+    networks:
+      - redis-network
+
 volumes:
   redis:
   redis-config:
