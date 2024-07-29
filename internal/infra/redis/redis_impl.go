@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -26,6 +27,10 @@ func NewRedisClient(ctx context.Context, address, port, password, rateLimiter st
 
 	if rateLimiter == "" {
 		rateLimiter = "IP"
+	}
+
+	if rateLimiter != "IP" && rateLimiter != "TOKEN" {
+		panic(errors.New("rate limiter should be IP or TOKEN"))
 	}
 
 	return &RedisConfig{

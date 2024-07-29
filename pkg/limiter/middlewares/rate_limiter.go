@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/Gustavo-RF/desafio-tecnico-1/pkg/limiter"
@@ -17,6 +18,12 @@ func RateLimiter(l *limiter.RateLimiterConfig) func(http.Handler) http.Handler {
 
 			if success {
 				next.ServeHTTP(w, r)
+			} else {
+				w.WriteHeader(http.StatusBadGateway)
+				response := Response{
+					Message: "request failed. Check your configurations",
+				}
+				json.NewEncoder(w).Encode(response)
 			}
 		})
 	}
